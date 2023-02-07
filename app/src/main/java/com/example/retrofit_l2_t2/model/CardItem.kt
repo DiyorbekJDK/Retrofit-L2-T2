@@ -11,9 +11,9 @@ data class CardItem(
     val bankName: String,
     val cardHolderName: String,
     val cvv: String,
-    val data1: Int,
-    val data2: Int,
+    val data1: String,
+    val data2: String,
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val number: Int
+    val number: String
 ) : Parcelable

@@ -8,7 +8,7 @@ import retrofit2.http.*
 interface ApiService {
 
     @GET("/api/v1/card")
-    fun getCards(): Call<CardResponse>
+    fun getCards(): Call<List<CardItem>>
 
     @GET("/api/v1/card/{id}")
     fun getUserById(@Path("id") id: Int): Call<CardResponse>
