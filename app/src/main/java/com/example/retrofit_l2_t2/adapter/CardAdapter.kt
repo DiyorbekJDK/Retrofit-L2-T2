@@ -15,7 +15,7 @@ import java.util.*
 
 
 class CardAdapter : ListAdapter<CardItem, CardAdapter.CardViewHolder>(DiffCallBack()) {
-    lateinit var onClick: (id: Int) -> Unit
+    lateinit var onClick: (CardItem) -> Unit
 
     private class DiffCallBack : DiffUtil.ItemCallback<CardItem>() {
         override fun areItemsTheSame(oldItem: CardItem, newItem: CardItem): Boolean {
@@ -29,7 +29,6 @@ class CardAdapter : ListAdapter<CardItem, CardAdapter.CardViewHolder>(DiffCallBa
 
     inner class CardViewHolder(private val binding: CardLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("ResourceAsColor")
         fun bind(cardItem: CardItem) {
             with(binding) {
                 bankName.text = cardItem.bankName
@@ -39,7 +38,7 @@ class CardAdapter : ListAdapter<CardItem, CardAdapter.CardViewHolder>(DiffCallBa
                 cardView.setCardBackgroundColor(randomColor())
             }
             itemView.setOnClickListener {
-                onClick(cardItem.id)
+                onClick(cardItem)
             }
 
         }
@@ -58,22 +57,27 @@ class CardAdapter : ListAdapter<CardItem, CardAdapter.CardViewHolder>(DiffCallBa
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-    @ColorRes
+
     private fun randomColor(): Int {
-       val list = listOf(
-           R.color.red,
-           R.color.blue,
-           R.color.green,
-           R.color.app_color,
-           R.color.gray,
-           R.color.purple_500,
-           R.color.purple_700,
-           R.color.teal_200,
-           R.color.teal_700,
-           R.color.yellow,
-           R.color.orange
-        )
-        val random = (list.indices).random()
-        return list[random]
-   }
+        val random = Random()
+        return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256))
+    }
+//    @ColorRes
+//    private fun randomColor2(): Int {
+//       val list = listOf(
+//           R.color.red,
+//           R.color.blue,
+//           R.color.green,
+//           R.color.app_color,
+//           R.color.gray,
+//           R.color.purple_500,
+//           R.color.purple_700,
+//           R.color.teal_200,
+//           R.color.teal_700,
+//           R.color.yellow,
+//           R.color.orange
+//        )
+//        val random = (list.indices).random()
+//        return list[random]
+//   }
 }

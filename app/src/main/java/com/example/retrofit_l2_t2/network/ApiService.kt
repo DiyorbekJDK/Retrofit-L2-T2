@@ -11,7 +11,7 @@ interface ApiService {
     fun getCards(): Call<List<CardItem>>
 
     @GET("/api/v1/card/{id}")
-    fun getUserById(@Path("id") id: Int): Call<CardResponse>
+    fun getCardById(@Path("id") id: Int): Call<CardItem>
 
     @POST("/api/v1/card")
     fun addCard(@Body cardItem: CardItem): Call<CardResponse>
@@ -20,7 +20,7 @@ interface ApiService {
     fun updateCard(@Path("id") id: Int,@Body cardItem: CardItem): Call<CardResponse>
 
     @DELETE("/api/v1/card/{id}")
-    fun deleteCard(@Path("id") id: Int): Call<Any>
+    fun deleteCard(@Path("id") id: Int): Call<CardResponse>
 
 
 }

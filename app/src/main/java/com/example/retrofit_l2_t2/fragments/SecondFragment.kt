@@ -41,21 +41,25 @@ class SecondFragment : Fragment() {
     }
 
     private fun allCode() {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
         fillTheCard()
-        val card = CardItem(
-            binding.bankName.text?.toString()?.trim()!!,
-            binding.cardHolder.text?.toString()?.trim()!!,
-            binding.cardCvv.text?.toString()?.trim()!!,
-            binding.cardDay.text?.toString()!!,
-            binding.cardYear.text?.toString()!!,
-            0,
-            binding.cardNumber.text?.toString()!!
-        )
         val id: Int? = arguments?.getInt("id")
         if (id == null) {
             binding.btnSaveEdit.setOnClickListener {
                 binding.progressBar2.isVisible = true
-                RetroInstance.apiService().addCard(card).enqueue(object : Callback<CardResponse> {
+                RetroInstance.apiService().addCard(
+                    CardItem(
+                        binding.bankName.text?.toString()?.trim()!!,
+                        binding.cardHolder.text?.toString()?.trim()!!,
+                        binding.cardCvv.text?.toString()?.trim()!!,
+                        binding.cardDay.text?.toString()!!,
+                        binding.cardYear.text?.toString()!!,
+                        0,
+                        binding.cardNumber.text?.toString()!!
+                    )
+                ).enqueue(object : Callback<CardResponse> {
                     override fun onResponse(
                         call: Call<CardResponse>,
                         response: Response<CardResponse>
@@ -80,6 +84,60 @@ class SecondFragment : Fragment() {
                     }
                 })
             }
+        }else{
+            binding.btnSaveEdit.text = "Update Card"
+            RetroInstance.apiService().getCardById(id).enqueue(object : Callback<CardItem>{
+                override fun onResponse(
+                    call: Call<CardItem>,
+                    response: Response<CardItem>
+                ) {
+                    if (response.isSuccessful){
+                        binding.apply {
+                            bankName.setText(response.body()?.bankName)
+                            cardCvv.setText(response.body()?.cvv)
+                            cardDay.setText(response.body()?.data1)
+                            cardHolder.setText(response.body()?.cardHolderName)
+                            cardYear.setText(response.body()?.data2)
+                            cardNumber.setText(response.body()?.number)
+                        }
+                        binding.btnSaveEdit.setOnClickListener {
+                            RetroInstance.apiService().updateCard(id,CardItem(
+                                binding.bankName.text?.toString()?.trim()!!,
+                                binding.cardHolder.text?.toString()?.trim()!!,
+                                binding.cardCvv.text?.toString()?.trim()!!,
+                                binding.cardDay.text?.toString()!!,
+                                binding.cardYear.text?.toString()!!,
+                                id,
+                                binding.cardNumber.text?.toString()!!
+                            )).enqueue(object: Callback<CardResponse>{
+                                override fun onResponse(
+                                    call: Call<CardResponse>,
+                                    response: Response<CardResponse>
+                                ) {
+                                    if(response.isSuccessful){
+                                        snackBar("Updated!")
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<CardResponse>, t: Throwable) {
+                                    snackBar("There is some Error occurred")
+                                    Log.d("%%%", "onFailure: ${t.message}")
+                                }
+                            })
+
+                        }
+                        binding.btnBack.setOnClickListener {
+                            findNavController().popBackStack()
+                            findNavController().popBackStack()
+                        }
+
+                    }
+                }
+
+                override fun onFailure(call: Call<CardItem>, t: Throwable) {
+                    snackBar("Error")
+                }
+            })
         }
     }
 
